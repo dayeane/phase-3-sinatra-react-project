@@ -22,13 +22,14 @@ ActiveRecord::Schema.define(version: 2021_12_07_032221) do
 
   create_table "hotels", force: :cascade do |t|
     t.integer "trip_id"
-    t.string "check_in"
-    t.string "check_out"
+    t.date "check_in"
+    t.date "check_out"
     t.string "location"
     t.index ["trip_id"], name: "index_hotels_on_trip_id"
   end
 
   create_table "providers", force: :cascade do |t|
+    t.string "name"
     t.date "date"
     t.integer "trip_id"
     t.string "note"
