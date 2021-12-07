@@ -4,6 +4,7 @@ class CreateCost < ActiveRecord::Migration[6.1]
       t.integer :costtable_id
       t.string :costtable_type
       t.references :trip
+      t.integer :amount
     end
   end
 end

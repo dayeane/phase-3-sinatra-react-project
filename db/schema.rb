@@ -16,6 +16,7 @@ ActiveRecord::Schema.define(version: 2021_12_07_032221) do
     t.integer "costtable_id"
     t.string "costtable_type"
     t.integer "trip_id"
+    t.integer "amount"
     t.index ["trip_id"], name: "index_costs_on_trip_id"
   end
 
@@ -24,17 +25,13 @@ ActiveRecord::Schema.define(version: 2021_12_07_032221) do
     t.string "check_in"
     t.string "check_out"
     t.string "location"
-    t.integer "cost_id"
-    t.index ["cost_id"], name: "index_hotels_on_cost_id"
     t.index ["trip_id"], name: "index_hotels_on_trip_id"
   end
 
   create_table "providers", force: :cascade do |t|
     t.date "date"
-    t.integer "cost_id"
     t.integer "trip_id"
     t.string "note"
-    t.index ["cost_id"], name: "index_providers_on_cost_id"
     t.index ["trip_id"], name: "index_providers_on_trip_id"
   end
 
@@ -42,8 +39,6 @@ ActiveRecord::Schema.define(version: 2021_12_07_032221) do
     t.integer "trip_id"
     t.string "stop_reason"
     t.string "note"
-    t.integer "cost_id"
-    t.index ["cost_id"], name: "index_stops_on_cost_id"
     t.index ["trip_id"], name: "index_stops_on_trip_id"
   end
 
