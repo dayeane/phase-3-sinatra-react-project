@@ -13,7 +13,12 @@ class ApplicationController < Sinatra::Base
   end
 
   post "/trips" do
-    Trip.create(params).to_json
+    trip = Trip.create(params[:trip])
+    if trip
+      trip.to_json(include: { hotels: { include: { cost: {} }},
+        providers: { include: {cost: {} }},
+        costs: {}})
+    end
   end
 
   put "/trips/:id" do
@@ -26,7 +31,7 @@ class ApplicationController < Sinatra::Base
 
   #hotels
   get "/trips/:trip_id/hotels" do
-    Trip.find(params[:trip_id]).hotels.all.to_json(include: :cost)
+    Trip.find(params[:trip_id]).hotels.to_json(include: :cost)
   end
 
   get "/trips/:trip_id/hotels/:id" do
@@ -36,11 +41,14 @@ class ApplicationController < Sinatra::Base
   post "/trips/:trip_id/hotels" do
     # { trip_id: "1",
     #   hotel: { check_in: Date.today, check_out: Date.tomorrow, location: "tampa"}
+    #   cost: "100"
     # }
     trip = Trip.find(params[:trip_id])
-    hotel = trip.hotels.create(params)
-    hotel.create_cost(amount: 100, trip: trip)
-    hotel.to_json()
+    hotel = trip.hotels.create(params[:hotel])
+    if hotel
+      hotel.create_cost(amount: params[:cost], trip: trip)
+      trip.hotels.to_json(include: :cost)
+    end
   end
 
   put "/trips/:trip_id/hotels/:id" do
@@ -54,7 +62,9 @@ class ApplicationController < Sinatra::Base
   delete "/trips/:trip_id/hotels/:id" do
     # { trip_id: "1",
     #   id: "1" }
-    Trip.find(params[:trip_id]).hotels.find(params[:id]).delete().to_json
+    if Trip.find(params[:trip_id]).hotels.find(params[:id]).delete()
+      Trip.find(params[:trip_id]).hotels.to_json()
+    end
   end
 
   #providers
@@ -68,9 +78,12 @@ class ApplicationController < Sinatra::Base
 
   post "/trips/:trip_id/providers" do
     trip = Trip.find(params[:trip_id])
-    provider = trip.providers.create(params)
-    provider.create_cost(amount: 100, trip: trip)
-    provider.to_json()
+
+    provider = trip.providers.create(params[:provider])
+    if provider
+      provider.create_cost(amount: 100, trip: trip)
+      trip.providers.to_json()
+    end
   end
 
   put "/trips/:trip_id/providers/:id" do
@@ -78,12 +91,14 @@ class ApplicationController < Sinatra::Base
   end
 
   delete "/trips/:trip_id/providers/:id" do
-    Trip.find(params[:trip_id]).providers.find(params[:id]).delete().to_json
+    if Trip.find(params[:trip_id]).providers.find(params[:id]).delete()
+      Trip.find(params[:trip_id]).providers.to_json()
+    end
   end
   
   #stops
   get "/trips/:trip_id/stops" do
-    Trip.find(params[:trip_id]).stops.to_json()
+    Trip.find(params[:trip_id]).stops.to_json(include: :cost)
   end
 
   get "/trips/:trip_id/stops/:id" do
@@ -92,9 +107,11 @@ class ApplicationController < Sinatra::Base
 
   post "/trips/:trip_id/stops" do
     trip = Trip.find(params[:trip_id])
-    stop = trip.stops.create(params)
-    stop.create_cost(amount: 100, trip: trip)
-    stop.to_json()
+    stop = trip.stops.create(params[:stop])
+    if stop
+      stop.create_cost(amount: params[:cost], trip: trip)
+      trip.stops.to_json(include: :cost)
+    end
   end
 
   put "/trips/:trip_id/stops/:id" do
@@ -102,6 +119,8 @@ class ApplicationController < Sinatra::Base
   end
 
   delete "/trips/:trip_id/stops/:id" do
-    Trip.find(params[:trip_id]).stops.find(params[:id]).delete().to_json
+    if Trip.find(params[:trip_id]).stops.find(params[:id]).delete()
+      Trip.find(params[:trip_id]).stops.to_json()
+    end
   end
 end
