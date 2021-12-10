@@ -63,7 +63,8 @@ class ApplicationController < Sinatra::Base
   delete "/trips/:trip_id/hotels/:id" do
     # { trip_id: "1",
     #   id: "1" }
-    if Trip.find(params[:trip_id]).hotels.find(params[:id]).delete()
+    hotel = Trip.find(params[:trip_id]).hotels.find(params[:id])
+    if hotel.cost.delete() && hotel.delete()
       Trip.find(params[:trip_id]).hotels.to_json(include: :cost)
     end
   end
@@ -92,7 +93,8 @@ class ApplicationController < Sinatra::Base
   end
 
   delete "/trips/:trip_id/providers/:id" do
-    if Trip.find(params[:trip_id]).providers.find(params[:id]).delete()
+    provider = Trip.find(params[:trip_id]).providers.find(params[:id])
+    if provider.cost.delete() && provider.delete()
       Trip.find(params[:trip_id]).providers.to_json(include: :cost)
     end
   end
@@ -120,7 +122,8 @@ class ApplicationController < Sinatra::Base
   end
 
   delete "/trips/:trip_id/stops/:id" do
-    if Trip.find(params[:trip_id]).stops.find(params[:id]).delete()
+    stop = Trip.find(params[:trip_id]).stops.find(params[:id])
+    if stop.cost.delete() && stop.delete()
       Trip.find(params[:trip_id]).stops.to_json(include: :cost)
     end
   end

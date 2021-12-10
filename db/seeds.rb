@@ -3,7 +3,7 @@ puts "🌱 Seeding spices..."
 
 
 
-(0..20).each do |num|
+(0..5).each do |num|
   puts "creating_trip #{num}"
   trip1 = Trip.create(from: Faker::Address.city, to: Faker::Address.city, depart_date: Date.today, budget: 16)
 
