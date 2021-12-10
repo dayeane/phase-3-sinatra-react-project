@@ -7,7 +7,6 @@ class ApplicationController < Sinatra::Base
   end
 
   get "/trips/:id" do
-    binding.pry
     Trip.find(params[:id]).to_json(include: { hotels: { include: { cost: {} }},
                                               providers: { include: {cost: {} }},
                                               costs: {}})
